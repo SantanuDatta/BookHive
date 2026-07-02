@@ -11,6 +11,11 @@
         "tailwindcss": "^4.1.4",
         "vite": "^8.1.2"
     },
+    "overrides": {
+        "vite-plugin-full-reload": {
+            "picomatch": "4.0.4"
+        }
+    },
     "lint-staged": {
         "**/*.php": [
             "php ./vendor/bin/pint"

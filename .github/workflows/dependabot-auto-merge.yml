@@ -29,15 +29,15 @@ jobs:
           echo "package-ecosystem=${{ steps.metadata.outputs.package-ecosystem }}"
           echo "directory=${{ steps.metadata.outputs.directory }}"
 
-      - name: Approve patch update
-        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
+      - name: Approve safe update
+        if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
         run: gh pr review --approve "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
 
-      - name: Enable auto-merge for patch update
-        if: ${{ steps.metadata.outputs.update-type == 'version-update:semver-patch' }}
+      - name: Enable auto-merge for safe update
+        if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
         run: gh pr merge --auto --squash --delete-branch "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
