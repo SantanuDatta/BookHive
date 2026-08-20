@@ -35,12 +35,12 @@ jobs:
         if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
         run: gh pr review --approve "$PR_URL"
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_URL: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ github.token }}
 
       - name: Enable auto-merge for safe update
         if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
         run: gh pr merge --auto --squash --delete-branch "$PR_URL"
         env:
-          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_URL: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ github.token }}
