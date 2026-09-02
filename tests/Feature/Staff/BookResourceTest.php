@@ -268,7 +268,7 @@ describe('Book Edit Page', function () use ($state): void {
             ->author_id->toBe($updatedBook->author->getKey())
             ->genre_id->toBe($updatedBook->genre->getKey())
             ->isbn->toBe($updatedBook->isbn)
-            ->price->toBe($updatedBook->price)
+            ->price->toEqual($updatedBook->price)
             ->stock->toBe($updatedBook->stock)
             ->available->toBe($updatedBook->available)
             ->published->format('Y-m-d')->toBe($updatedBook->published->format('Y-m-d'));
@@ -308,7 +308,7 @@ describe('Book Edit Page', function () use ($state): void {
             ->author_id->toBe($updatedBook->author->getKey())
             ->genre_id->toBe($updatedBook->genre->getKey())
             ->isbn->toBe($updatedBook->isbn)
-            ->price->toBe($updatedBook->price)
+            ->price->toEqual($updatedBook->price)
             ->stock->toBe($updatedBook->stock)
             ->available->toBe($updatedBook->available)
             ->published->format('Y-m-d')->toBe($updatedBook->published->format('Y-m-d'));
