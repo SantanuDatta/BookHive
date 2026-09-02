@@ -33,14 +33,16 @@ jobs:
 
       - name: Approve safe update
         if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
-        run: gh pr review --approve "$PR_URL"
+        run: gh pr review --repo "$GH_REPO" --approve "$PR_NUMBER"
         env:
-          PR_URL: ${{ github.event.pull_request.number }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ github.token }}
 
       - name: Enable auto-merge for safe update
         if: ${{ contains(fromJSON('["version-update:semver-patch","version-update:semver-minor"]'), steps.metadata.outputs.update-type) }}
-        run: gh pr merge --auto --squash --delete-branch "$PR_URL"
+        run: gh pr merge --repo "$GH_REPO" --auto --squash --delete-branch "$PR_NUMBER"
         env:
-          PR_URL: ${{ github.event.pull_request.number }}
+          GH_REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           GH_TOKEN: ${{ github.token }}
