@@ -2,16 +2,20 @@
     "agents": [
         "codex"
     ],
+    "cloud": false,
     "guidelines": true,
     "mcp": true,
-    "nightwatch_mcp": false,
+    "nightwatch": false,
     "packages": [
-        "filament/filament"
+        "filament/filament",
+        "barryvdh/laravel-debugbar"
     ],
     "sail": false,
     "skills": [
+        "infer-conventions",
         "laravel-best-practices",
-        "pest-testing",
-        "tailwindcss-development"
+        "testing-best-practices",
+        "tailwindcss-development",
+        "debug-using-debugbar"
     ]
 }
