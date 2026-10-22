@@ -15,6 +15,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 class TransactionForm
@@ -38,7 +39,16 @@ class TransactionForm
                                         ->label('Borrower')
                                         ->required(),
                                     Select::make('book_id')
-                                        ->options(fn () => Book::whereAvailable(true)
+                                        ->options(fn (Get $get, string $operation) => Book::query()
+                                            ->where(function (Builder $query) use ($get, $operation): void {
+                                                $query->whereAvailable(true);
+
+                                                $bookId = $get('book_id');
+
+                                                if ($operation === 'edit' && $bookId) {
+                                                    $query->orWhereKey($bookId);
+                                                }
+                                            })
                                             ->pluck('title', 'id'))
                                         ->native(false)
                                         ->searchable()
@@ -60,7 +70,11 @@ class TransactionForm
                                             || $get('status') === 'delayed')
                                         ->afterOrEqual('borrowed_date')
                                         ->live()
-                                        ->required(fn (string $context) => $context === 'edit')
+                                        ->required(fn (Get $get, string $context): bool => $context === 'edit'
+                                            && in_array($get('status'), [
+                                                BorrowedStatus::Returned->value,
+                                                BorrowedStatus::Delayed->value,
+                                            ], true))
                                         ->columnSpanFull(),
                                 ])->columns(2),
                             ])->columnSpan(['sm' => 2, 'md' => 2, 'xxl' => 5]),

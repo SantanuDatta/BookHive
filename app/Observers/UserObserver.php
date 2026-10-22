@@ -21,8 +21,9 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        // Check if the user is a borrower
-        if (auth()->user() && auth()->user()->role->name == 'staff' && $user->role && $user->role->name == 'borrower') {
+        $actor = auth()->user();
+
+        if ($actor instanceof User && $actor->role?->name === 'staff' && $user->role?->name === 'borrower') {
             Notification::make()
                 ->title('New Borrower has been Registered')
                 ->body(

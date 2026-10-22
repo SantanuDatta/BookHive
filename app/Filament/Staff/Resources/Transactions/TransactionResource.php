@@ -2,6 +2,7 @@
 
 namespace App\Filament\Staff\Resources\Transactions;
 
+use App\Enums\BorrowedStatus;
 use App\Filament\Staff\Resources\Transactions\Pages\CreateTransaction;
 use App\Filament\Staff\Resources\Transactions\Pages\EditTransaction;
 use App\Filament\Staff\Resources\Transactions\Pages\ListTransactions;
@@ -36,7 +37,9 @@ class TransactionResource extends Resource
         return [
             'Borrower' => $record->user->name,
             'Book Borrowed' => $record->book->title,
-            'Status' => $record->status,
+            'Status' => $record->status instanceof BorrowedStatus
+                ? $record->status->getLabel()
+                : (string) $record->status,
         ];
     }
 

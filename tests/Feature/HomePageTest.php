@@ -20,3 +20,7 @@ it('renders the home landing page', function (): void {
 it('registers the home route name', function (): void {
     expect(route('home', absolute: false))->toBe('/');
 });
+
+it('does not expose public staff registration', function (): void {
+    $this->get('/staff/register')->assertNotFound();
+});

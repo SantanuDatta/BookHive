@@ -10,7 +10,6 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Storage;
 
 class AuthorsTable
 {
@@ -38,20 +37,12 @@ class AuthorsTable
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make()
-                        ->before(function ($record): void {
-                            Storage::disk('public')->delete($record);
-                        }),
+                    DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->before(function ($records): void {
-                            $records->each(function ($record): void {
-                                Storage::disk('public')->delete($record);
-                            });
-                        }),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

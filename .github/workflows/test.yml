@@ -39,6 +39,9 @@ jobs:
           restore-keys: |
             php-${{ matrix.php }}-composer-
 
+      - name: Validate Composer configuration
+        run: composer validate --strict
+
       - name: Install PHP dependencies
         run: composer install --no-interaction --no-progress --prefer-dist --ansi
 

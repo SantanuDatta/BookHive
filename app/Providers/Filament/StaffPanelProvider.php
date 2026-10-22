@@ -4,7 +4,6 @@ namespace App\Providers\Filament;
 
 use App\Filament\Staff\Pages\Auth\EditProfile;
 use App\Filament\Staff\Pages\Auth\Login;
-use App\Filament\Staff\Pages\Auth\Register;
 use App\Filament\Staff\Widgets\AccountWidget;
 use App\Settings\GeneralSettings;
 use Filament\Http\Middleware\Authenticate;
@@ -31,7 +30,6 @@ class StaffPanelProvider extends PanelProvider
             ->id('staff')
             ->path('staff')
             ->login(Login::class)
-            ->registration(Register::class)
             ->passwordReset()
             ->profile(EditProfile::class)
             ->emailVerification()

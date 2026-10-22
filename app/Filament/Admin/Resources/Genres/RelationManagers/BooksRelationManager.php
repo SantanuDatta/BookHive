@@ -66,7 +66,7 @@ class BooksRelationManager extends RelationManager
                                 TextInput::make('isbn')
                                     ->prefixIcon('heroicon-o-qr-code')
                                     ->prefixIconColor('white')
-                                    ->numeric(),
+                                    ->maxLength(17),
                                 TextInput::make('price')
                                     ->prefix('$')
                                     ->mask(RawJs::make('$money($input)'))
@@ -92,8 +92,8 @@ class BooksRelationManager extends RelationManager
                                     ->collection('coverBooks')
                                     ->responsiveImages()
                                     ->storeFileNamesIn('cover_image_file_names')
-                                    ->deleteUploadedFileUsing(function ($record): void {
-                                        Storage::disk('public')->delete($record);
+                                    ->deleteUploadedFileUsing(function (string $file): void {
+                                        Storage::disk('public')->delete($file);
                                     }),
                                 DatePicker::make('published'),
                                 Toggle::make('available'),
@@ -125,20 +125,12 @@ class BooksRelationManager extends RelationManager
             ->recordActions([
                 ActionGroup::make([
                     EditAction::make(),
-                    DeleteAction::make()
-                        ->before(function ($record): void {
-                            Storage::disk('public')->delete($record);
-                        }),
+                    DeleteAction::make(),
                 ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make()
-                        ->before(function ($records): void {
-                            $records->each(function ($record): void {
-                                Storage::disk('public')->delete($record);
-                            });
-                        }),
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }

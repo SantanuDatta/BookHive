@@ -17,7 +17,7 @@ enum BorrowedStatus: string implements HasColor, HasIcon, HasLabel
         return __($this->name);
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string
     {
         return match ($this) {
             self::Borrowed => 'info',
@@ -26,7 +26,7 @@ enum BorrowedStatus: string implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public function getIcon(): ?string
+    public function getIcon(): string
     {
         return match ($this) {
             self::Borrowed => 'heroicon-s-arrow-path',
@@ -35,7 +35,7 @@ enum BorrowedStatus: string implements HasColor, HasIcon, HasLabel
         };
     }
 
-    public static function randomValue()
+    public static function randomValue(): string
     {
         $cases = self::cases();
         $key = array_rand($cases);

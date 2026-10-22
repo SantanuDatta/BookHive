@@ -60,7 +60,7 @@ class BookForm
                                         TextInput::make('isbn')
                                             ->prefixIcon('heroicon-o-qr-code')
                                             ->prefixIconColor('white')
-                                            ->numeric()
+                                            ->maxLength(17)
                                             ->required()
                                             ->unique(ignoreRecord: true),
                                         TextInput::make('price')

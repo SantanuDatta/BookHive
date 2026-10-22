@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4.1",
         "filament/filament": "^5.7.8",
         "filament/spatie-laravel-media-library-plugin": "^5.7.8",
         "filament/spatie-laravel-settings-plugin": "^5.7.8",
@@ -16,7 +16,7 @@
         "guzzlehttp/guzzle": "^7.15.5",
         "laravel/framework": "^13.30.1",
         "laravel/tinker": "^3.0.2",
-        "league/commonmark": "^2.10.0"
+        "league/commonmark": "^2.10.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^4.4.3",

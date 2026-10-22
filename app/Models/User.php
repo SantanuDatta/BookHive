@@ -15,6 +15,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property-read Role|null $role
+ */
 #[ObservedBy(UserObserver::class)]
 class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerifyEmail
 {
@@ -24,7 +27,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -40,7 +43,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -68,8 +71,8 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
         $role = $this->role?->name;
 
         return match ($panel->getId()) {
-            'admin' => $role == 'admin',
-            'staff' => $role == 'staff',
+            'admin' => $role === 'admin',
+            'staff' => $role === 'staff',
             default => false,
         } && $this->hasVerifiedEmail();
     }
@@ -84,11 +87,5 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, MustVerif
 
         // If avatar_url is not available, use the UiAvatarsProvider directly
         return $uiAvatarsProvider->get($this);
-    }
-
-    public static function booted(): void
-    {
-        parent::boot();
-
     }
 }

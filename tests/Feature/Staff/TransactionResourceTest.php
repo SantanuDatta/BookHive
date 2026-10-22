@@ -23,9 +23,13 @@ beforeEach(function () use ($state): void {
         'status' => true,
     ])->create();
 
-    $state->transaction = Transaction::factory()
+    $state->transaction = Transaction::factory([
+        'returned_date' => null,
+        'status' => BorrowedStatus::Borrowed,
+    ])
         ->for(Book::factory([
             'available' => true,
+            'stock' => 2,
         ]))
         ->for($state->user)
         ->create();
@@ -33,6 +37,7 @@ beforeEach(function () use ($state): void {
     $state->makeTransaction = Transaction::factory()
         ->for(Book::factory([
             'available' => true,
+            'stock' => 2,
         ]))
         ->for($state->user)
         ->make();
@@ -132,6 +137,30 @@ describe('Transaction Create Page', function () use ($state): void {
             'status' => BorrowedStatus::Borrowed->value,
             'returned_date' => null,
         ]);
+
+        expect($newTransaction->book->refresh())
+            ->stock->toBe(1)
+            ->available->toBeTrue();
+    });
+
+    it('rejects a transaction when the selected book is unavailable', function () use ($state): void {
+        $book = Book::factory([
+            'available' => false,
+            'stock' => 0,
+        ])->create();
+
+        $state->create
+            ->fillForm([
+                'book_id' => $book->getKey(),
+                'user_id' => $state->user->getKey(),
+                'borrowed_date' => now(),
+                'borrowed_for' => 10,
+                'status' => BorrowedStatus::Borrowed->value,
+            ])
+            ->call('create')
+            ->assertHasFormErrors(['book_id']);
+
+        expect(Transaction::where('book_id', $book->getKey())->exists())->toBeFalse();
     });
 
     it('can validate form data on create', function () use ($state): void {
@@ -209,6 +238,45 @@ describe('Transaction Edit Page', function () use ($state): void {
             ->returned_date->format('Y-m-d')->toBe($updatedTransactionData['returned_date']->format('Y-m-d'));
     });
 
+    it('restores a book when a borrowed transaction is returned', function () use ($state): void {
+        $transaction = $state->transaction;
+        $book = $transaction->book;
+        $book->update([
+            'available' => true,
+            'stock' => 1,
+        ]);
+
+        $state->edit
+            ->fillForm([
+                'book_id' => $book->getKey(),
+                'user_id' => $transaction->user->getKey(),
+                'borrowed_date' => now(),
+                'borrowed_for' => 10,
+                'status' => BorrowedStatus::Returned,
+                'returned_date' => now()->addDays(5),
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
+
+        expect($book->refresh())
+            ->stock->toBe(2)
+            ->available->toBeTrue();
+    });
+
+    it('does not apply a fine before a transaction is returned', function () use ($state): void {
+        $transaction = Transaction::factory([
+            'borrowed_date' => now()->subDays(20),
+            'borrowed_for' => 10,
+            'returned_date' => null,
+            'status' => BorrowedStatus::Borrowed,
+        ])
+            ->for(Book::factory(['available' => true]))
+            ->for($state->user)
+            ->create();
+
+        expect($transaction->fine)->toBe(0);
+    });
+
     it('can update the transaction when it is delayed and fine is applied', function () use ($state): void {
         $transaction = $state->transaction;
 
@@ -269,6 +337,22 @@ describe('Transaction Edit Page', function () use ($state): void {
                 'borrowed_for' => 'required',
                 'returned_date' => 'required',
             ]);
+    });
+
+    it('does not require a return date for an active transaction', function () use ($state): void {
+        $transaction = $state->transaction;
+
+        $state->edit
+            ->fillForm([
+                'book_id' => $transaction->book->getKey(),
+                'user_id' => $transaction->user->getKey(),
+                'borrowed_date' => $transaction->borrowed_date,
+                'borrowed_for' => $transaction->borrowed_for,
+                'status' => BorrowedStatus::Borrowed->value,
+                'returned_date' => null,
+            ])
+            ->call('save')
+            ->assertHasNoFormErrors();
     });
 
     it('can not delate a transaction from the edit page', function () use ($state): void {

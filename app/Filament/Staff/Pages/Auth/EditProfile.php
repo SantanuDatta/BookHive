@@ -2,7 +2,6 @@
 
 namespace App\Filament\Staff\Pages\Auth;
 
-use App\Models\User;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
@@ -36,8 +35,8 @@ class EditProfile extends \Filament\Auth\Pages\EditProfile
             ->imageEditor()
             ->avatar()
             ->directory('users')
-            ->deleteUploadedFileUsing(fn (User $record) => Storage::disk('public')
-                ->delete($record->avatar_url))
+            ->deleteUploadedFileUsing(fn (string $file): bool => Storage::disk('public')
+                ->delete($file))
             ->extraAttributes([
                 'class' => 'justify-center',
             ]);

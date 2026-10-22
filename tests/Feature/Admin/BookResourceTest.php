@@ -103,6 +103,12 @@ describe('Book List Page', function () use ($state): void {
     });
 });
 
+it('casts book prices to two decimal places', function (): void {
+    $book = Book::factory(['price' => 19])->create();
+
+    expect($book->refresh()->price)->toBe('19.00');
+});
+
 describe('Book Create Page', function () use ($state): void {
     beforeEach(function () use ($state): void {
         $state->create = livewire(CreateBook::class, ['panel' => 'admin']);

@@ -35,7 +35,13 @@ class TransactionObserver
      */
     public function updated(Transaction $transaction): void
     {
-        if (auth()->user()->role->name == 'staff' && $transaction->status == BorrowedStatus::Returned) {
+        $actor = auth()->user();
+
+        if (! $actor instanceof User || $actor->role?->name !== 'staff') {
+            return;
+        }
+
+        if ($transaction->status === BorrowedStatus::Returned) {
             Notification::make()
                 ->title('A Borrower Returned a book')
                 ->body($transaction->user->name.' returned a book on time')
@@ -44,7 +50,7 @@ class TransactionObserver
                 ->sendToDatabase($this->admin);
         }
 
-        if (auth()->user()->role->name == 'staff' && $transaction->status == BorrowedStatus::Delayed) {
+        if ($transaction->status === BorrowedStatus::Delayed) {
             Notification::make()
                 ->title('A Borrower Delayed to return a book')
                 ->body(

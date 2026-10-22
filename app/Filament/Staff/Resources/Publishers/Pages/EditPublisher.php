@@ -6,7 +6,6 @@ use App\Filament\Staff\Resources\Publishers\PublisherResource;
 use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
-use Illuminate\Support\Facades\Storage;
 
 class EditPublisher extends EditRecord
 {
@@ -20,11 +19,7 @@ class EditPublisher extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            DeleteAction::make()
-                ->before(function ($record): void {
-                    Storage::disk('public')
-                        ->delete($record);
-                }),
+            DeleteAction::make(),
             Action::make('reset')
                 ->outlined()
                 ->icon('heroicon-o-arrow-path')

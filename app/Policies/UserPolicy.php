@@ -7,11 +7,13 @@ use App\Models\User;
 
 class UserPolicy
 {
-    public function before(User $user)
+    public function before(User $user): ?bool
     {
-        if ($user->role->name === Role::IS_ADMIN) {
+        if ($user->role?->name === Role::IS_ADMIN) {
             return true;
         }
+
+        return null;
     }
 
     /**
@@ -19,7 +21,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->role->name === Role::IS_STAFF;
+        return $user->role?->name === Role::IS_STAFF;
     }
 
     /**
@@ -27,7 +29,7 @@ class UserPolicy
      */
     public function view(User $user): bool
     {
-        return $user->role->name === Role::IS_STAFF;
+        return $user->role?->name === Role::IS_STAFF;
     }
 
     /**
@@ -35,7 +37,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->role->name === Role::IS_STAFF;
+        return $user->role?->name === Role::IS_STAFF;
     }
 
     /**
@@ -43,7 +45,7 @@ class UserPolicy
      */
     public function update(User $user): bool
     {
-        return $user->role->name === Role::IS_STAFF;
+        return $user->role?->name === Role::IS_STAFF;
     }
 
     /**

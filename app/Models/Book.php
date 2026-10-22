@@ -29,7 +29,9 @@ class Book extends Model implements HasMedia
 
     protected $casts = [
         'available' => 'boolean',
+        'price' => 'decimal:2',
         'published' => 'date',
+        'stock' => 'integer',
     ];
 
     public function author(): BelongsTo
